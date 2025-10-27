@@ -10,3 +10,8 @@ It uses a while loop to go through the whole array, counting how many bytes of t
 Lastly, it assigns the new vector to *data_ptr* and zeros any leftover bytes.
 
 This algorithm also allows for decompression since there is a fixed structure of <count, byte>. The decompression algorithm would just need to loop over the new_size, making an output buffer out of the number of occurrences of each byte.
+
+## Running
+1. [Install Rust](https://rust-lang.org/tools/install/)
+2. Run `rustc main.rs` to compile an executable
+3. Run `./main` to run.
