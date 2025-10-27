@@ -5,10 +5,10 @@ fn main() {
     0x56, 0x45, 0x56, 0x56, 0x56, 0x09, 0x09, 0x09
     ];
     println!("Original size {}", bytes_to_compress.len());
-    let compressed_bytes: usize = compress_bytes(&mut bytes_to_compress[..], 24);
-    println!("Compressed size {}", compressed_bytes);
+    let compressed_size: usize = compress_bytes(&mut bytes_to_compress[..], 24);
+    println!("Data is now size {}", compressed_size);
 
-    println!("Try large data set:");
+    println!("Trying large data set:");
     let mut large_array: Vec<u8> = Vec::new();
     for _ in 0..100 {
         large_array.push(0x00)
@@ -30,9 +30,8 @@ fn main() {
     }
 
     println!("Original size large {}", large_array.len());
-    let compressed_bytes: usize = compress_bytes(&mut large_array[..], 600);
-    println!("Compressed size large {}", compressed_bytes);
-
+    let large_compressed_size: usize = compress_bytes(&mut large_array[..], 600);
+    println!("Compressed size large {}", large_compressed_size);
 }
 
 fn compress_bytes(data_ptr: &mut [u8], data_size: usize) -> usize {
@@ -47,12 +46,21 @@ fn compress_bytes(data_ptr: &mut [u8], data_size: usize) -> usize {
             new_vec.push(data_ptr[i]);
             byte_count = 1;
         }
-        i += 1
+        i += 1;
     }
 
     // handle last run
     new_vec.push(byte_count as u8);
     new_vec.push(data_ptr[data_size - 1]);
-    let data_ptr: &Vec<u8> = &new_vec;
-    data_ptr.len()
+
+    let compressed_size: usize = new_vec.len();
+
+    // populate data_ptr with compressed data
+    data_ptr[..compressed_size].copy_from_slice(&new_vec);
+
+    for b in &mut data_ptr[compressed_size..] {
+        *b = 0;
+    }
+
+    compressed_size
 }
